@@ -13,6 +13,10 @@ import ConfirmOrder from './components/cart/ConfirmOrder';
 import Payment from './components/cart/Payment';
 import OrderSuccess from './components/cart/OrderSuccess';
 
+// Order Imports
+import ListOrders from './components/orders/ListOrders';
+import OrderDetails from './components/orders/OrderDetails'
+
 import Login from './components/user/Login';
 import Register from './components/user/Register';
 import Profile from "./components/user/Profile";
@@ -73,6 +77,8 @@ const App = () => {
 						component={UpdatePassword}
 						exact
 					/>
+					<ProtectedRoute path="/orders/me" component={ListOrders} exact />
+					<ProtectedRoute path="/order/:id" component={OrderDetails} exact />
 				</div>
 				<Footer />
 			</div>
