@@ -92,7 +92,7 @@ export const allOrders = () => async (dispatch) => {
 		const { data } = await axios.get(`/api/v1/admin/orders`);
 
 		dispatch({
-			type: ALL_ORDERS_SUCCESS,
+			type: ALL_ORDERS_SUCCESS, 
 			payload: data,
 		});
 	} catch (error) {
@@ -114,7 +114,7 @@ export const updateOrder = (id, orderData) => async (dispatch) => {
 			},
 		};
 
-		const { data } = await axios.put(
+		const { data } = await axios.patch(
 			`/api/v1/admin/order/${id}`,
 			orderData,
 			config,

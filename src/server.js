@@ -26,10 +26,10 @@ app.listen(port, () =>
  * Handle Unhandled Promise rejections
 */
 
-// process.on('unhandledRejection', err => {
-// 	process.stdout.write(`ERROR: ${err.stack}`);
-// 	process.stdout.write('Shutting down the server due to Unhandled Promise rejection');
-// 	app.close(() => {
-// 		process.exit(1)
-// 	})
-// })
+process.on('unhandledRejection', err => {
+	process.stdout.write(`ERROR: ${err.stack}`);
+	process.stdout.write('Shutting down the server due to Unhandled Promise rejection');
+	app.close(() => {
+		process.exit(1)
+	})
+})
