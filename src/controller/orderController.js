@@ -5,10 +5,12 @@ import { errorResponse, successResponse } from '../utils/response';
 
 const  updateStock=async (id, quantity) =>{
 	const product = await Product.findById(id);
+	if (product) {
+		product.stock -= quantity;
 
-	product.stock -= quantity;
-
-	await product.save({ validateBeforeSave: false });
+		await product.save({ validateBeforeSave: false });
+	}
+	
 }
 class OrderController {
 	// Create a new order   =>  /api/v1/order/new

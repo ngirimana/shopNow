@@ -5,12 +5,19 @@ import {
 	productsReducer,
 	productDetailsReducer,
 	newReviewReducer,
+	productReducer,
+	newProductReducer,
+	productReviewsReducer,
+	reviewReducer
+
 } from './reducer/productReducer';
 import {
-  authReducer,
-  userReducer,
-  forgotPasswordReducer,
-} from "./reducer/userReducer";
+	authReducer,
+	userReducer,
+	forgotPasswordReducer,
+	allUsersReducer,
+	userDetailsReducer,
+} from './reducer/userReducer';
 import { cartReducer } from "./reducer/cartReducers";
 import {
 	newOrderReducer,
@@ -24,6 +31,10 @@ import {
 const reducer = combineReducers({
 	products: productsReducer,
 	productDetails: productDetailsReducer,
+	newProduct: newProductReducer,
+	product: productReducer,
+	productReviews: productReviewsReducer,
+	review: reviewReducer,
 	auth: authReducer,
 	user: userReducer,
 	forgotPassword: forgotPasswordReducer,
@@ -33,6 +44,8 @@ const reducer = combineReducers({
 	allOrders: allOrdersReducer,
 	orderDetails: orderDetailsReducer,
 	order: orderReducer,
+	allUsers: allUsersReducer,
+	userDetails: userDetailsReducer,
 	newReview: newReviewReducer,
 });
 

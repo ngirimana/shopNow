@@ -13,7 +13,7 @@ import {
 	clearErrors,
 } from '../../actions/productActions';
 import { addItemToCart } from '../../actions/cartActions';
-import { NEW_REVIEW_RESET } from '../../constants/productConstant';
+import { NEW_REVIEW_RESET } from '../../constants/productConstants';
 
 const ProductDetails = ({ match }) => {
 	const [quantity, setQuantity] = useState(1);
