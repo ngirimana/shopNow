@@ -1,8 +1,12 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-undef */
 /* eslint-disable no-shadow */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
+import cloudinary from 'cloudinary'
 import Product from '../models/product';
-import { errorResponse, successResponse }  from '../utils/response';
+import { errorResponse,}  from '../utils/response';
 import APIFeatures from '../utils/apiFeatures';
 
 
@@ -14,14 +18,36 @@ class ProductController {
 	 * @returns {object} of created product data
 	 */
 	static async newProduct(req, res) {
-		try {
-			req.body.user = req.user.id;
-			const product = await Product.create(req.body);
-
-			return successResponse(res, 201, 'Product created successfully', product);
-		} catch (err) {
-			return errorResponse(res, 500, err.message);
+		   let images = []
+		if (typeof req.body.images === 'string') {
+			images.push(req.body.images)
+		} else {
+			images = req.body.images
 		}
+
+		const imagesLinks = [];
+
+		for (let i = 0; i < images.length; i++) {
+			const result = await cloudinary.v2.uploader.upload(images[i], {
+				folder: 'products'
+			});
+
+			imagesLinks.push({
+				public_id: result.public_id,
+				url: result.secure_url
+			})
+		}
+
+		req.body.images = imagesLinks
+		req.body.user = req.user.id;
+
+		const product = await Product.create(req.body);
+
+		res.status(201).json({
+			success: true,
+			product
+		})
+
 	}
 
 	/**
@@ -31,7 +57,6 @@ class ProductController {
 	 * @returns {Array } of all product in database
 	 */
 	static async getProducts(req, res) {
-		
 		try {
 			const resPerPage = 8;
 			const productsCount = await Product.countDocuments();
@@ -46,7 +71,6 @@ class ProductController {
 			apiFeatures.pagination(resPerPage);
 			products = await apiFeatures.query;
 
-			
 			return res.status(200).json({
 				status: 200,
 				message: 'List of products from database',
@@ -55,11 +79,25 @@ class ProductController {
 				filteredProductsCount,
 				products,
 			});
-			
 		} catch (err) {
 			return errorResponse(res, 500, err.message);
 		}
 	}
+	
+	// Get all products (Admin)  =>   /api/v1/admin/products
+	static async getAdminProducts(req, res) {
+		try {
+			const products = await Product.find();
+
+			res.status(200).json({
+				success: true,
+				products,
+			});
+		}catch (err) {
+			return errorResponse(res, 500, err.message);
+		}
+		
+	};
 
 	/**
 	 * Get details for single product => /api/v1/products/:id
@@ -90,22 +128,54 @@ class ProductController {
 	 */
 	static async updateProduct(req, res) {
 		try {
-			let product = await Product.findById(req.params.id);
+			 let product = await Product.findById(req.params.id);
 
-			if (product) {
-				product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-					new: true,
-					runValidators: true,
-					useFindAndModify: false,
-				});
-				return successResponse(
-					res,
-					200,
-					'Product updated successfully.',
-					product,
-				);
+			if (!product) {
+				return errorResponse(res, 404, 'Product is not available');
 			}
-			return errorResponse(res, 404, 'Product is not available');
+
+			let images = [];
+			if (typeof req.body.images === 'string') {
+				images.push(req.body.images);
+			} else {
+				images = req.body.images;
+			}
+
+			if (images !== undefined) {
+				// Deleting images associated with the product
+				for (let i = 0; i < product.images.length; i++) {
+					const result = await cloudinary.v2.uploader.destroy(
+						product.images[i].public_id,
+					);
+				}
+
+				const imagesLinks = [];
+
+				for (let i = 0; i < images.length; i++) {
+					const result = await cloudinary.v2.uploader.upload(images[i], {
+						folder: 'products',
+					});
+
+					imagesLinks.push({
+						public_id: result.public_id,
+						url: result.secure_url,
+					});
+				}
+
+				req.body.images = imagesLinks;
+			}
+
+			product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+				new: true,
+				runValidators: true,
+				useFindAndModify: false,
+			});
+
+			res.status(200).json({
+				success: true,
+				product,
+			});
+			
 		} catch (err) {
 			return errorResponse(res, 400, err.message);
 		}
@@ -125,9 +195,18 @@ class ProductController {
 			if (!product) {
 				return errorResponse(res, 404, 'Product is not available');
 			}
+			/**
+			 * Deleting images associated with the product
+			 */
+			for (let i = 0; i < product.images.length; i++){
+				const result= await cloudinary.v2.uploader.destroy(product.images[i].public_id)
+			}
 
 			await product.remove();
-			return successResponse(res, 200, 'Product is deleted successfully.');
+			res.status(200).json({
+				success: true,
+				message: 'Product is deleted.',
+			})
 		} catch (err) {
 			return errorResponse(res, 400, err.message);
 		}
@@ -191,7 +270,7 @@ class ProductController {
 		}
 	}
 	// Delete Product Review   =>   /api/v1/reviews
-	
+
 	static async deleteReview(req, res) {
 		try {
 			const product = await Product.findById(req.query.productId);

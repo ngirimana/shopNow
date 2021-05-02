@@ -7,7 +7,8 @@ const router = express.Router();
 
 
 
-router.get('/products',ProductController.getProducts);
+router.get('/products', ProductController.getProducts);
+router.route('/admin/products').get(ProductController.getAdminProducts);
 router.get('/product/:id', ProductController.getSingleProduct);
 router.post('/admin/product/new', isAuthenticatedUser,authorizeRoles('admin'), ProductController.newProduct);
 router.patch('/admin/product/:id', isAuthenticatedUser,authorizeRoles('admin'), ProductController.updateProduct);

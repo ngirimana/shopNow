@@ -32,6 +32,7 @@ class UserController {
 	}
 
 	static async loginUser(req, res) {
+
 		const { email, password } = req.body;
 
 		// Checks if email and password is entered by user
@@ -39,22 +40,27 @@ class UserController {
 			return errorResponse(res, 400, 'Please enter email & password');
 		}
 		// Finding user in database
-		const user = await User.findOne({ email }).select('+password');
+		try {
+			const user = await User.findOne({ email }).select('+password');
 
-		if (!user) {
-			return errorResponse(res, 401, 'Invalid Email or Password');
-		}
-		// Checks if password is correct or not
-		const isPasswordMatched = await user.comparePassword(password);
+			if (!user) {
+				return errorResponse(res, 401, 'Invalid Email or Password');
+			}
+			// Checks if password is correct or not
+			const isPasswordMatched = await user.comparePassword(password);
 
-		if (!isPasswordMatched) {
-			return errorResponse(res, 401, 'Invalid Email or Password');
+			if (!isPasswordMatched) {
+				return errorResponse(res, 401, 'Invalid Email or Password');
+			}
+			sendToken(user, 200, res);
+		} catch (err) {
+			return errorResponse(res, 400, err.message);
 		}
-		sendToken(user, 200, res);
 	}
 
 	// Forgot Password   =>  /api/v1/password/forgot
 	static async forgotPassword(req, res) {
+		
 		const user = await User.findOne({ email: req.body.email });
 
 		if (!user) {
