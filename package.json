@@ -9,7 +9,8 @@
   "scripts": {
     "start": "babel-node src/server.js",
     "dev": "SET NODE_ENV=DEVELOPMENT  &  nodemon --exec babel-node src/server.js",
-    "seeder": "babel-node src/utils/seeder.js"
+    "seeder": "babel-node src/utils/seeder.js",
+     "heroku-postbuild" : "NPM_CONFIG_PRODUCTION=false && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "dependencies": {
     "@babel/cli": "^7.13.10",
