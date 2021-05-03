@@ -156,7 +156,7 @@ const App = () => {
 					component={ProductReviews}
 					exact
 				/>
-				{!loading && user.role !== 'admin' && <Footer />}
+				{!loading && user && user.role !== 'admin' && <Footer />}
 			</div>
 		</Router>
 	);
