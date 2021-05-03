@@ -15,7 +15,7 @@ const ConfirmOrder = ({ history }) => {
 		(acc, item) => acc + item.price * item.quantity,
 		0,
 	);
-	const shippingPrice = itemsPrice < 200 ? 0 : 25;
+	const shippingPrice = itemsPrice > 200 ? 0 : 25;
 	const taxPrice = Number((0.05 * itemsPrice).toFixed(2));
 	const totalPrice = (itemsPrice + shippingPrice + taxPrice).toFixed(2);
 
@@ -118,4 +118,3 @@ const ConfirmOrder = ({ history }) => {
 };
 
 export default ConfirmOrder;
- 
