@@ -18,30 +18,30 @@ class ProductController {
 	 * @returns {object} of created product data
 	 */
 	static async newProduct(req, res) {
-		try {
-			let images = [];
-			if (typeof req.body.images === 'string') {
-				images.push(req.body.images);
-			} else {
-				images = req.body.images;
-			}
+	
+		let images = [];
+		if (typeof req.body.images === 'string') {
+			images.push(req.body.images);
+		} else {
+			images = req.body.images;
+		}
 
-			const imagesLinks = [];
+		const imagesLinks = [];
 
-			for (let i = 0; i < images.length; i++) {
-				const result = await cloudinary.v2.uploader.upload(images[i], {
-					folder: 'products',
-				});
+		for (let i = 0; i < images.length; i++) {
+			const result = await cloudinary.v2.uploader.upload(images[i], {
+				folder: 'products',
+			});
 
-				imagesLinks.push({
-					public_id: result.public_id,
-					url: result.secure_url,
-				});
-			}
+			imagesLinks.push({
+				public_id: result.public_id,
+				url: result.secure_url,
+			});
+		}
 
-			req.body.images = imagesLinks;
-			req.body.user = req.user.id;
-
+		req.body.images = imagesLinks;
+		req.body.user = req.user.id;
+		try{
 			const product = await Product.create(req.body);
 
 			res.status(201).json({
@@ -49,6 +49,7 @@ class ProductController {
 				product,
 			});
 		} catch (err) {
+			console.log(err)
 			return errorResponse(res, 500, err.message);
 		}
 
