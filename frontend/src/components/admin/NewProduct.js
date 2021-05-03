@@ -30,7 +30,7 @@ const NewProduct = ({ history }) => {
 		'Shoes',
 		'Beauty',
 		'Health',
-		'Sports',
+		'Sport',
 		'Outdoor',
 		'Home',
 	];
