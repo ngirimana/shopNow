@@ -74,7 +74,10 @@ userSchema.methods.getJwtToken = function () {
 	});
 } 
 
-// Generate password reset token
+/**
+ *  Generate password reset token
+ */
+ 
 userSchema.methods.getResetPasswordToken = function () {
 	// Generate token
 	const resetToken = crypto.randomBytes(20).toString('hex');
