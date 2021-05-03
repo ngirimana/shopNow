@@ -26,7 +26,7 @@ import UpdateProfile from './components/user/UpdateProfile';
 import UpdatePassword from "./components/user/UpdatePassword";
 import ForgotPassword from "./components/user/ForgotPassword";
 import NewPassword from "./components/user/NewPassword";
-import ProtectedRoute from './components/route/ProtectedRoute';
+import ProtectedRoute from './components/route/protectedRoute';
 import { loadUser } from './actions/userActions';
 
 
